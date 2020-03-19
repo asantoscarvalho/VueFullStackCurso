@@ -1,16 +1,20 @@
 <template>
   <div id="app">
-      <alunos/>
+      <Nav></Nav>
+      <div class="marginPrincipal">
+        <router-view :key="$route.fullPath"></router-view>
+      </div>
+      
   </div>
 </template>
 
 <script>
-import alunos from './components/Aluno/alunos.vue';
+import Nav from './components/_nav/nav.vue';
 
 export default {
   name: 'App',
   components: {
-    alunos
+    Nav
   }
 }
 </script> 
@@ -27,9 +31,12 @@ body, html {
   margin: 0;
   height: 100%;
 }
+.marginPrincipal{
+  width: 50%;
+  margin:auto;
+}
 #app {
-margin: 0;
-  height: 100%;
+width: 100%;
 }
 .btn{
   background-color: brown;

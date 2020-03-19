@@ -1,19 +1,54 @@
 {
+  "professores": [
+    {
+      "id": 1,
+      "Nome": "Ligia"
+    },
+    {
+      "id": 2,
+      "Nome": "Andre"
+    }
+  ],
   "alunos": [
     {
       "id": 1,
       "Nome": "João",
-      "Sobrenome": "Carvalho"
+      "Sobrenome": "Carvalho",
+      "DataNascimento": "26/03/2009",
+      "Professor": {
+        "id": 1,
+        "Nome": "Ligia"
+      }
     },
     {
       "id": 2,
       "Nome": "Pedro",
-      "Sobrenome": "Carvalho"
+      "Sobrenome": "Carvalho",
+      "DataNascimento": "16/11/2011",
+      "Professor": {
+        "id": 1,
+        "Nome": "Ligia"
+      }
     },
     {
+      "id": 3,
       "Nome": "Joaquim",
-      "Sobrenome": "",
-      "id": 3
+      "Sobrenome": "Margotto",
+      "DataNascimento": "16/12/2016",
+      "Professor": {
+        "id": 2,
+        "Nome": "Andre"
+      }
+    },
+    {
+      "id": 5,
+      "Nome": "Jose",
+      "Sobrenome": "Silva ",
+      "DataNascimento": "25/02/2017",
+      "Professor": {
+        "id": 1,
+        "Nome": "Ligia"
+      }
     }
   ]
 }

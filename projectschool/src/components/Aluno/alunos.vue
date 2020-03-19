@@ -1,6 +1,6 @@
 <template>
   <div >
-    <titulo texto="Aluno" />
+    <titulo :texto="professorid != undefined ? 'Professor: ' + professor.Nome : 'Todos os Alunos'" />
     <br>
     <div>
     <input type="text" placeholder="Nome do Aluno" v-model="nome" v-on:keyup.enter="addAluno()"> 
@@ -16,7 +16,7 @@
       <tbody v-if="alunos.length">
         <tr v-for="(aluno,index) in alunos" :key="index" >
           <td>{{aluno.id}}</td>
-          <td>{{aluno.Nome}} {{aluno.Sobrenome}} </td>
+          <router-link :to="`/alunodetalhe/${aluno.id}`" tag="td" style="cursor: pointer"> {{aluno.Nome}} {{aluno.Sobrenome}}  </router-link>
           <td><button class="btn" @click="remover(aluno)">Remover</button></td>
         </tr>
       </tbody>
@@ -36,15 +36,28 @@ export default {
   data() {
     return {
       titulo: 'Aluno',
-      nome: 'Alunos',
-      alunos:[]
+      professorid: this.$route.params.prof_id,
+      nome: "",
+      alunos:[],
+      professor:{}
     }
   },
   created(){
+    if (this.professorid)
+    {
     this.$http
+    .get('http://localhost:3000/alunos?Professor.id='+ this.professorid)
+    .then(res => res.json())
+    .then(alunos => this.alunos = alunos)
+    }
+    else{
+        this.$http
     .get('http://localhost:3000/alunos')
     .then(res => res.json())
     .then(alunos => this.alunos = alunos)
+    }
+
+      this.carregarProfessores();
   },
   props: {
     
@@ -53,8 +66,10 @@ export default {
     addAluno() {
       let _aluno = {
         Nome: this.nome,
-        Sobrenome: ""
-
+        Sobrenome: "",
+        Professor: {
+          id: this.professorid,
+        Nome: this.professor.Nome}
       }
     this.$http
       .post('http://localhost:3000/alunos',_aluno)
@@ -72,6 +87,16 @@ export default {
 
       let indice = this.alunos.indexOf(aluno);
       this.alunos.splice(indice,1);});
+    },
+    carregarProfessores(){
+          if (this.professorid)
+          {
+            this.$http
+            .get('http://localhost:3000/professores/'+ this.professorid)
+            .then(res => res.json())
+            .then(professor => this.professor = professor)
+          }
+
     }
   },
 }
@@ -80,6 +105,7 @@ export default {
 
 <style scoped>
  input{
+   width: calc(100% - 195px);
    border:0;
    padding: 20px;
    font-size: 1.3em;
@@ -88,6 +114,7 @@ export default {
  }
  
  .btninput{
+  width: 150px;
    border:0px;
    padding: 20px;
    font-size: 1.3em;

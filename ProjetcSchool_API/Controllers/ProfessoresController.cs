@@ -100,7 +100,7 @@ namespace ProjetcSchool_API.Controllers
         {
             try
             {
-                var result = await _repo.GetAlunosAsyncByProfessorId(ProfessorId, true);
+                var result = await _repo.GetProfessorAsyncById(ProfessorId, true);
                 return Ok(result);
             }
             catch (System.Exception)

@@ -74,12 +74,12 @@ namespace ProjetcSchool_API.Controllers
             {
                 var aluno = await _repo.GetAlunoAsyncById(AlunoId, false);
                 if (aluno == null) return NotFound();
-
-                _repo.Add(model);
+                
+                _repo.Update(model);
                 if (await _repo.SaveChangesAsync())
                 {
                     aluno = await _repo.GetAlunoAsyncById(AlunoId, true);
-                    return Created($"/api/alunos/{model.id}", model);
+                    return Created($"/api/alunos/{model.id}", aluno);
                 }
             }
             catch (System.Exception)

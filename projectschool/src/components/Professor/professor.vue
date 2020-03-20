@@ -10,12 +10,14 @@
       <tbody v-if="Professores.length">
         <tr v-for="(professor,index) in Professores" :key="index" >
           <td>{{professor.id}}</td>
-          <router-link :to="`/alunos/${professor.id}`" tag="td" style="cursor: pointer">{{professor.Nome}}  </router-link>
+          <router-link :to="`/alunos/${professor.id}`" tag="td" style="cursor: pointer">{{professor.nome}}  </router-link>
           <td>{{professor.QtdAlunos}}</td>
         </tr>
       </tbody>
       <tfoot v-if="!Professores.length">
-         <b>Nenhum professor cadastrado</b>
+        <tr>
+          <td colspan="3" style="text-align: center;"><b>Nenhum professor cadastrado</b></td>
+        </tr>
       </tfoot>
     </table>
     </div>
@@ -33,7 +35,7 @@ import titulo from '../_share/Titulo';
         },
         created(){
             this.$http
-            .get('http://localhost:3000/alunos')
+            .get('http://localhost:5000/api/alunos')
             .then(res => res.json())
             .then(alunos => {
               this.alunos = alunos;
@@ -49,8 +51,8 @@ import titulo from '../_share/Titulo';
             this.Professores.forEach((professor,index) => {
                   professor = {
                     id: professor.id,
-                    Nome: professor.Nome,
-                    QtdAlunos: this.alunos.filter(aluno => aluno.Professor.id == professor.id).length,
+                    nome: professor.nome,
+                    QtdAlunos: this.alunos.filter(aluno => aluno.professorId == professor.id).length,
                     
                   }
                   this.Professores[index] = professor;
@@ -58,7 +60,7 @@ import titulo from '../_share/Titulo';
           },
           carregarProfessores(){
             this.$http
-            .get('http://localhost:3000/professores')
+            .get('http://localhost:5000/api/professores')
             .then(res => res.json())
             .then(professores => {
               this.Professores = professores

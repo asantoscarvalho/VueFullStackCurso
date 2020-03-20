@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <Titulo :texto="'Aluno: '+ aluno.Nome" :btnVoltar="visualizar">
+    <div v-if="!loading">
+      <Titulo :texto="'Aluno: '+ aluno.nome" :btnVoltar="visualizar">
            <button class="btn btnEditar" @click="editar()" >Editar</button>
       </Titulo>
       <table>
@@ -15,31 +15,31 @@
               <tr>
                   <td class="colPequeno">Nome</td>
                   <td>
-                      <label v-if="visualizar"> {{aluno.Nome}}</label>
-                      <input v-else type="text" v-model="aluno.Nome">
+                      <label v-if="visualizar"> {{aluno.nome}}</label>
+                      <input v-else type="text" v-model="aluno.nome">
                   </td>
               </tr>
               <tr>
                   <td class="colPequeno">Sobrenome</td>
                   <td>
-                      <label v-if="visualizar" > {{aluno.Sobrenome}}</label>
-                      <input v-else type="text" v-model="aluno.Sobrenome">
+                      <label v-if="visualizar" > {{aluno.sobreNome}}</label>
+                      <input v-else type="text" v-model="aluno.sobreNome">
                   </td>
               </tr>
               <tr>
                   <td class="colPequeno">Data de Nascimento</td>
                   <td>
-                      <label v-if="visualizar" > {{aluno.DataNascimento}}</label>
-                      <input v-else type="text" v-model="aluno.DataNascimento">
+                      <label v-if="visualizar" > {{aluno.dataNascimento}}</label>
+                      <input v-else type="text" v-model="aluno.dataNascimento">
                   </td>
               </tr>
               <tr>
                   <td class="colPequeno">Professor</td>
                   <td>
-                      <label v-if="visualizar" > {{aluno.Professor.Nome}}</label>
-                      <select v-else v-model="aluno.Professor" >
-                          <option v-for="(professor,index) in Professores" :key="index" v-bind:value="professor">
-                              {{ professor.Nome }}
+                      <label v-if="visualizar" > {{aluno.professor.nome}}</label>
+                      <select v-else v-model="aluno.professorId" >
+                          <option v-for="(professor,index) in Professores" :key="index" v-bind:value="professor.id">
+                              {{ professor.nome }}
                           </option>
                       </select>
                   </td>
@@ -68,22 +68,13 @@
                 Professores:[],
                 aluno: {},
                 alunoid: this.$route.params.id,
-                visualizar : true
+                visualizar : true,
+                loading : true
             }
         },
         created(){
 
-            this.$http
-            .get('http://localhost:3000/alunos/'+ this.alunoid)
-            .then(res => res.json())
-            .then(aluno => this.aluno = aluno);
-
-
-            this.$http
-            .get('http://localhost:3000/professores')
-            .then(res => res.json())
-            .then(professores => this.Professores = professores);
-
+            this.CarregarProfessor();
 
         },
         methods:{
@@ -94,18 +85,48 @@
                 this.visualizar = true;
             },
             salvar(){
+                
+
                 let _alunoEditar  = {
                     id : this.aluno.id,
-                    Nome: this.aluno.Nome,
-                    Sobrenome: this.aluno.Sobrenome,
-                    DataNascimento: this.aluno.DataNascimento,
-                    Professor: this.aluno.Professor
+                    nome: this.aluno.nome,
+                    sobreNome: this.aluno.sobreNome,
+                    dataNascimento: this.aluno.dataNascimento,
+                    professorId : this.aluno.professorId
                 }
 
-                this.$http.put('http://localhost:3000/alunos/'+_alunoEditar.id, _alunoEditar);
+                
+
+                this.$http.put(`http://localhost:5000/api/alunos/${_alunoEditar.id}`, _alunoEditar)            
+                .then(res => res.json())
+                .then(aluno => this.aluno = aluno);
                 
                 this.visualizar = true;
+            },
+            CarregarProfessor(){
+                
+            this.$http
+            .get('http://localhost:5000/api/professores')
+            .then(res => res.json())
+            .then(
+                professores => {
+                    this.Professores = professores;
+                    this.CarregarAluno();
+                    }
+            );
+            },
+            CarregarAluno(){
+                 this.$http
+                .get('http://localhost:5000/api/alunos/'+ this.alunoid)
+                .then(res => res.json())
+                .then(
+                    aluno => {
+                        this.aluno = aluno;
+                        this.loading = false;
+                        }
+                    );
             }
+
         }
     }
 </script>
